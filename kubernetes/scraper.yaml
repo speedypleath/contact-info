@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: scraper-svc
+  namespace: contact-info
+spec:
+  clusterIP: 10.96.0.30
+  selector:
+    app: scraper
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scraper
+  namespace: contact-info
+  labels:
+    app: scraper
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: scraper
+  template:
+    metadata:
+      labels:
+        app: scraper
+    spec:
+      containers:
+      - name: scraper
+        image: speedypleath/scraper:latest
+        env:
+        - name: NODE_ENV
+          value: "production"
+        ports:
+        - containerPort: 3001
+      serviceAccountName: default
+      

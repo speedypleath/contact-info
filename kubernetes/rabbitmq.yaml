@@ -1,0 +1,30 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+    name: rabbitmq
+    namespace: contact-info
+spec:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 800m
+      memory: 1Gi
+  override:
+    statefulSet:
+      spec:
+        volumeClaimTemplates:
+          - apiVersion: v1
+            kind: PersistentVolumeClaim
+            metadata:
+              name: persistence
+              namespace: default
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 10Gi
+              volumeMode: Filesystem
